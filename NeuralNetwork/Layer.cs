@@ -22,11 +22,13 @@ namespace NeuralNetwork
         public int cellCount;
         public TransferFunction function;
         public double[,] weights;
-        public double offsetFunction;
+        public double offsetOfFunction;
+        public double[] output;
+        public double[] errors;
 
-        public double[] Calculate(double[] input)
+        public void FeedForward(double[] input)
         {
-            double[] output = MyMath.Multiply(input, weights);
+            output = MyMath.Multiply(input, weights);
 
             double max = 0;
             if (function == TransferFunction.Competitive)
@@ -35,30 +37,30 @@ namespace NeuralNetwork
             for (int i = 0; i < cellCount; i++)
             {
                 double n = output[i];
-                double a;
+                double a = 0;
                 switch (function)
                 {
                     case TransferFunction.Hard_Limit:
                         {
-                            a = (n + offsetFunction >= 0) ? 1 : 0;
+                            a = (n + offsetOfFunction >= 0) ? 1 : 0;
                         }
                         break;
 
                     case TransferFunction.Symmetrical_Hard_Limit:
                         {
-                            a = (n + offsetFunction >= 0) ? 1 : -1;
+                            a = (n + offsetOfFunction >= 0) ? 1 : -1;
                         }
                         break;
 
                     case TransferFunction.Linear:
                         {
-                            a = n + offsetFunction;
+                            a = n + offsetOfFunction;
                         }
                         break;
 
                     case TransferFunction.Saturating_Linear:
                         {
-                            n += offsetFunction;
+                            n += offsetOfFunction;
                             if (n > 1)
                                 a = 1;
                             else if (n < 0)
@@ -70,7 +72,7 @@ namespace NeuralNetwork
 
                     case TransferFunction.Symmetric_Saturating_Linear:
                         {
-                            n += offsetFunction;
+                            n += offsetOfFunction;
                             if (n > 1)
                                 a = 1;
                             else if (n < -1)
@@ -82,7 +84,7 @@ namespace NeuralNetwork
 
                     case TransferFunction.Log_Sigmoid:
                         {
-                            n += offsetFunction;
+                            n += offsetOfFunction;
                             double e = Math.Exp(-n);
                             a = 1.0 / (1 + e);
                         }
@@ -90,7 +92,7 @@ namespace NeuralNetwork
 
                     case TransferFunction.Hyperbolic_Tangent_Sigmoid:
                         {
-                            n += offsetFunction;
+                            n += offsetOfFunction;
                             double e1 = Math.Exp(n);
                             double e2 = Math.Exp(-n);
                             a = (e1 - e2) / (e1 + e2);
@@ -99,7 +101,7 @@ namespace NeuralNetwork
 
                     case TransferFunction.Positive_Linear:
                         {
-                            n += offsetFunction;
+                            n += offsetOfFunction;
                             a = (n < 0) ? 0 : n;
                         }
                         break;
@@ -110,8 +112,8 @@ namespace NeuralNetwork
                         }
                         break;
                 }
-            }
-            return output;
+                output[i] = a;
+            }            
         }
     }
 }

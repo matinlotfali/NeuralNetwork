@@ -10,7 +10,7 @@ namespace NeuralNetwork.Utilities
             double[,] result = new double[len1, len2];
             for (int i = 0; i < len1; i++)
                 for (int j = 0; j < len2; j++)
-                    result[i, j] = rand.NextDouble();
+                    result[i, j] = rand.NextDouble() * 2 - 1;
             return result;
         }
 
