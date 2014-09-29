@@ -14,11 +14,38 @@ namespace NeuralNetwork.Utilities
             return result;
         }
 
-        public static byte[] GetRandom(int len)
+        public static byte[] GetRandomBytes(int len)
         {
             byte[] result = new byte[len];
             rand.NextBytes(result);
             return result;
+        }
+
+        public static double[] GetRandomDoubles(int len)
+        {
+            double[] result = new double[len];
+            for (int j = 0; j < len; j++)
+                result[j] = rand.NextDouble() * 2 - 1;
+            return result;
+        }
+
+        public static double Sum(double[] array)
+        {
+            double sum = 0;
+            int l = array.Length;
+
+            unsafe
+            {
+                fixed (double* pa = array)
+                {
+                    for (int i = 0; i < l; i++)
+                    {
+                        sum += pa[i];
+                    }
+                }
+            }
+
+            return sum;
         }
 
         public static double GetMax(double[] a)
